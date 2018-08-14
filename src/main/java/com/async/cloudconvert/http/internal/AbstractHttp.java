@@ -5,7 +5,9 @@ import org.asynchttpclient.AsyncCompletionHandler;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.BoundRequestBuilder;
 import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Request;
+import org.asynchttpclient.Response;
 
 /**
  * @author Ankit Singh
@@ -14,7 +16,8 @@ public class AbstractHttp {
 
     private static AbstractHttp abstractHttp = new AbstractHttp();
 
-    private AbstractHttp() { }
+    private AbstractHttp() {
+    }
 
     public static AbstractHttp get() {
         return abstractHttp;
@@ -32,8 +35,8 @@ public class AbstractHttp {
         HttpHelper.execute(request, asyncCompletionHandler);
     }
 
-    public void executeRequest(Request request) {
-        HttpHelper.execute(request);
+    public ListenableFuture<Response> executeRequest(Request request) {
+        return HttpHelper.execute(request);
     }
 
     private static class HttpHelper {
@@ -48,8 +51,8 @@ public class AbstractHttp {
             asyncHttpClient.executeRequest(request, asyncCompletionHandler);
         }
 
-        private static void execute(Request request){
-            asyncHttpClient.executeRequest(request);
+        private static ListenableFuture<Response> execute(Request request) {
+            return asyncHttpClient.executeRequest(request);
         }
     }
 }

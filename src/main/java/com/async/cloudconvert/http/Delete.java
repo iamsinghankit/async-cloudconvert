@@ -2,23 +2,36 @@ package com.async.cloudconvert.http;
 
 import com.async.cloudconvert.http.internal.AbstractHttp;
 import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Request;
+import org.asynchttpclient.Response;
 
 /**
  * @author Ankit Singh
  */
- class Delete<T extends CharSequence> implements Http<String> {
+class Delete<T extends CharSequence> implements Http {
     private T t;
     private AbstractHttp abstractHttp;
 
-     Delete(T t) {
+    Delete(T t) {
         this.t = t;
-        abstractHttp=AbstractHttp.get();
+        abstractHttp = AbstractHttp.get();
     }
 
     @Override
-    public String request() {
-        BoundRequestBuilder boundRequestBuilder=abstractHttp.prepareDelete((String)t);
-        AbstractHttp.get().executeRequest(boundRequestBuilder.build());
-        return "Success";
+    public <T> void requestAsync(T t) {
+       throw new UnsupportedOperationException("There is no need for async request in DELETE call!!");
+    }
+
+    @Override
+    public ListenableFuture<Response> requestSync() {
+        return abstractHttp.executeRequest(request());
+    }
+
+
+    private Request request() {
+        BoundRequestBuilder boundRequestBuilder = abstractHttp.prepareDelete((String) t);
+        return boundRequestBuilder.build();
+
     }
 }

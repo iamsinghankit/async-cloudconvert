@@ -1,6 +1,8 @@
 package com.async.cloudconvert.http;
 
-import com.async.cloudconvert.service.Mapper;
+import org.asynchttpclient.AsyncCompletionHandler;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 
 import java.util.Map;
 
@@ -16,10 +18,18 @@ public final class HttpHandler {
         this.httpMethod = httpMethod;
     }
 
-    public Mapper execute() {
-        Http http = httpMethod.execute(builder);
-        return (Mapper) http.request();
+    public void execute(AsyncCompletionHandler handler) {
+        http().requestAsync(handler);
     }
+
+    public ListenableFuture<Response> execute() {
+        return http().requestSync();
+    }
+
+    private Http http() {
+        return httpMethod.execute(builder);
+    }
+
 
     public static class Builder {
         private String uri;

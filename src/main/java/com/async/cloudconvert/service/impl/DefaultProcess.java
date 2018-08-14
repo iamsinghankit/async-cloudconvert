@@ -6,12 +6,14 @@ import com.async.cloudconvert.http.HttpHandler;
 import com.async.cloudconvert.http.HttpMethod;
 import com.async.cloudconvert.http.internal.AbstractHttp;
 import com.async.cloudconvert.request.Header;
-import com.async.cloudconvert.service.Mapper;
+import com.async.cloudconvert.service.CloudResponse;
 import com.async.cloudconvert.service.Process;
 import com.async.cloudconvert.util.JsonUtil;
+import org.asynchttpclient.AsyncCompletionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.async.cloudconvert.request.Header.SECURE_URL;
 
@@ -26,7 +28,7 @@ public class DefaultProcess implements Process {
     private final String outputFormat;
     private final Header header;
     private HttpHandler httpHandler;
-    private Mapper response;
+    private CloudResponse response;
 
     public DefaultProcess(String apiKey, String inputFormat, String outputFormat, ProcessMode processMode) {
         this.inputFormat = inputFormat;
@@ -58,11 +60,34 @@ public class DefaultProcess implements Process {
 
     @Override
     public void start() {
-        response = httpHandler.execute();
+        response = new DefaultResponse(httpHandler.execute());
+    }
+
+    @Override
+    public void start(AsyncCompletionHandler handler) {
+        httpHandler.execute(handler);
+    }
+
+    @Override
+    public Optional<CloudResponse> getResponse() {
+        return Optional.ofNullable(response);
     }
 
     @Override
     public void close() {
-        AbstractHttp.get().prepareDelete(SECURE_URL + response.getAsMap().get("url"));
+        System.out.println("Deleting");
+        Optional<CloudResponse> response = getResponse();
+        if (response.isPresent())
+            delete((String) response.get().getAsMap().get("url"));
+        throw new RuntimeException("Cannot close the Async process!!");
+    }
+
+    @Override
+    public void close(String url) {
+        delete(url);
+    }
+
+    private void delete(String url) {
+        AbstractHttp.get().prepareDelete(SECURE_URL + url);
     }
 }

@@ -1,38 +1,40 @@
 package com.async.cloudconvert.http;
 
 import com.async.cloudconvert.http.internal.AbstractHttp;
-import com.async.cloudconvert.service.Mapper;
-import com.async.cloudconvert.service.impl.ResponseMapper;
 import org.asynchttpclient.AsyncCompletionHandler;
 import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Request;
+import org.asynchttpclient.Response;
 
 /**
  * @author Ankit Singh
  */
-class Post<T extends HttpHandler.Builder> implements Http<Mapper> {
+class Post<T extends HttpHandler.Builder> implements Http {
     private T builder;
-    private Mapper mapper;
     private AbstractHttp abstractHttp;
 
 
     Post(T builder) {
-        this(builder, new ResponseMapper());
-    }
-
-    Post(T builder, Mapper mapper) {
         this.builder = builder;
-        this.mapper = mapper;
         this.abstractHttp = AbstractHttp.get();
     }
 
     @Override
-    public Mapper request() {
+    public <T> void requestAsync(T t) {
+        abstractHttp.executeRequest(request(), (AsyncCompletionHandler) t);
+    }
+
+    @Override
+    public ListenableFuture<Response> requestSync() {
+        return abstractHttp.executeRequest(request());
+    }
+
+    private Request request() {
         BoundRequestBuilder request = abstractHttp.preparePost(builder.getUri());
         headers(request);
         body(request);
-        execute(request.build(),new DefaultAsyncHandler(mapper));
-        return mapper;
+        return request.build();
     }
 
     private void headers(BoundRequestBuilder request) {
@@ -43,7 +45,5 @@ class Post<T extends HttpHandler.Builder> implements Http<Mapper> {
         request.setBody(builder.getBody());
     }
 
-    private void execute(Request request,AsyncCompletionHandler asyncCompletionHandler) {
-        abstractHttp.executeRequest(request, asyncCompletionHandler);
-    }
+
 }

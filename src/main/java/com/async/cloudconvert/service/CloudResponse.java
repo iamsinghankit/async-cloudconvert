@@ -5,11 +5,13 @@ import java.util.Map;
 /**
  * @author Ankit Singh
  */
-public interface Mapper<R> {
-    void set(R t);
+public interface CloudResponse<R> {
 
     Map getAsMap();
 
+    String getAsString();
+
+    <T> T getAs(Class<T> clazz);
 
 
 }

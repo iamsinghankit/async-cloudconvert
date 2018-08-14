@@ -1,7 +1,6 @@
 package com.async.cloudconvert.http.internal;
 
-import com.async.cloudconvert.constant.HttpMethod;
-import com.async.cloudconvert.http.DefaultAsyncHandler;
+import com.async.cloudconvert.http.HttpMethod;
 import org.asynchttpclient.AsyncCompletionHandler;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.BoundRequestBuilder;
@@ -15,27 +14,26 @@ public class AbstractHttp {
 
     private static AbstractHttp abstractHttp = new AbstractHttp();
 
-    private AbstractHttp() {
-    }
+    private AbstractHttp() { }
 
     public static AbstractHttp get() {
         return abstractHttp;
     }
 
     public BoundRequestBuilder preparePost(String url) {
-        return HttpHelper.prepare(HttpMethod.POST.getMethod(), url);
+        return HttpHelper.prepare(HttpMethod.POST.getName(), url);
     }
 
     public BoundRequestBuilder prepareDelete(String url) {
-        return HttpHelper.prepare(HttpMethod.POST.getMethod(), url);
-    }
-
-    public void executeRequest(Request request) {
-        HttpHelper.execute(request, new DefaultAsyncHandler());
+        return HttpHelper.prepare(HttpMethod.DELETE.getName(), url);
     }
 
     public void executeRequest(Request request, AsyncCompletionHandler asyncCompletionHandler) {
         HttpHelper.execute(request, asyncCompletionHandler);
+    }
+
+    public void executeRequest(Request request) {
+        HttpHelper.execute(request);
     }
 
     private static class HttpHelper {
@@ -48,6 +46,10 @@ public class AbstractHttp {
 
         private static void execute(Request request, AsyncCompletionHandler asyncCompletionHandler) {
             asyncHttpClient.executeRequest(request, asyncCompletionHandler);
+        }
+
+        private static void execute(Request request){
+            asyncHttpClient.executeRequest(request);
         }
     }
 }

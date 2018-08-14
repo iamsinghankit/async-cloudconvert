@@ -1,6 +1,6 @@
 package com.async.cloudconvert.http;
 
-import com.async.cloudconvert.constant.HttpMethod;
+import com.async.cloudconvert.service.Mapper;
 
 import java.util.Map;
 
@@ -16,9 +16,9 @@ public final class HttpHandler {
         this.httpMethod = httpMethod;
     }
 
-    public void execute() {
-            Http http=httpMethod.execute(builder);
-            http.request();
+    public Mapper execute() {
+        Http http = httpMethod.execute(builder);
+        return (Mapper) http.request();
     }
 
     public static class Builder {
@@ -53,11 +53,11 @@ public final class HttpHandler {
         }
 
         public HttpHandler buildWithDefaultMethod() {
-            return new HttpHandler(this,HttpMethod.GET);
+            return new HttpHandler(this, HttpMethod.GET);
         }
 
         public HttpHandler build(HttpMethod httpMethod) {
-            return new HttpHandler(this,httpMethod);
+            return new HttpHandler(this, httpMethod);
         }
 
 

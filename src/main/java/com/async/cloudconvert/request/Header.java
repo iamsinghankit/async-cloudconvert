@@ -9,7 +9,8 @@ public class Header  {
     public  static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer";
     public  static final String CONTENT_TYPE = "Content-Type";
-    private static final String DEFAULT_CONTENT_TYPE = "application/json";
+    public static final String DEFAULT_CONTENT_TYPE = "application/json";
+    public static final String SECURE_URL="https:";
     private final String apiKey;
     private final String contentType;
 

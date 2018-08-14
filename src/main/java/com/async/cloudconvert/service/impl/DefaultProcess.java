@@ -1,15 +1,19 @@
 package com.async.cloudconvert.service.impl;
 
 import com.async.cloudconvert.CloudConvert;
-import com.async.cloudconvert.constant.HttpMethod;
 import com.async.cloudconvert.constant.ProcessMode;
 import com.async.cloudconvert.http.HttpHandler;
+import com.async.cloudconvert.http.HttpMethod;
+import com.async.cloudconvert.http.internal.AbstractHttp;
 import com.async.cloudconvert.request.Header;
+import com.async.cloudconvert.service.Mapper;
 import com.async.cloudconvert.service.Process;
 import com.async.cloudconvert.util.JsonUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.async.cloudconvert.request.Header.SECURE_URL;
 
 /**
  * @author Ankit Singh
@@ -22,6 +26,7 @@ public class DefaultProcess implements Process {
     private final String outputFormat;
     private final Header header;
     private HttpHandler httpHandler;
+    private Mapper response;
 
     public DefaultProcess(String apiKey, String inputFormat, String outputFormat, ProcessMode processMode) {
         this.inputFormat = inputFormat;
@@ -53,6 +58,11 @@ public class DefaultProcess implements Process {
 
     @Override
     public void start() {
-        httpHandler.execute();
+        response = httpHandler.execute();
+    }
+
+    @Override
+    public void close() {
+        AbstractHttp.get().prepareDelete(SECURE_URL + response.getAsMap().get("url"));
     }
 }

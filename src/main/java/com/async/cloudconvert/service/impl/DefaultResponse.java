@@ -7,14 +7,19 @@ import org.asynchttpclient.ListenableFuture;
 import org.asynchttpclient.Response;
 
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author Ankit Singh
  */
 public class DefaultResponse implements CloudResponse<Response> {
-    private ListenableFuture<Response> response;
+    private Response response;
 
     public DefaultResponse(ListenableFuture<Response> response) {
+        this.response = get(response);
+    }
+
+    public DefaultResponse(Response response) {
         this.response = response;
     }
 
@@ -37,7 +42,11 @@ public class DefaultResponse implements CloudResponse<Response> {
         return JsonUtil.toReference(getResponse(), clazz);
     }
 
+    private <V> V get(Future<V> future) {
+        return RuntimeExceptionWrapper.wrap(() -> future.get());
+    }
+
     private String getResponse() {
-       return RuntimeExceptionWrapper.wrap(() -> response.get().getResponseBody());
+        return response.getResponseBody();
     }
 }

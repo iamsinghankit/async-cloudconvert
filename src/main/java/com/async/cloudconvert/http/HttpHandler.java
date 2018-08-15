@@ -23,6 +23,7 @@ public final class HttpHandler {
     }
 
     public ListenableFuture<Response> execute() {
+        System.out.println(builder.uri+" "+httpMethod.getName());
         return http().requestSync();
     }
 

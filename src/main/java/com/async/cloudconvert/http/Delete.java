@@ -9,7 +9,7 @@ import org.asynchttpclient.Response;
 /**
  * @author Ankit Singh
  */
-class Delete<T extends CharSequence> implements Http {
+class Delete<T extends HttpHandler.Builder> implements Http {
     private T t;
     private AbstractHttp abstractHttp;
 
@@ -20,7 +20,7 @@ class Delete<T extends CharSequence> implements Http {
 
     @Override
     public <T> void requestAsync(T t) {
-       throw new UnsupportedOperationException("There is no need for async request in DELETE call!!");
+        throw new UnsupportedOperationException("There is no need for async request in DELETE call!!");
     }
 
     @Override
@@ -30,7 +30,7 @@ class Delete<T extends CharSequence> implements Http {
 
 
     private Request request() {
-        BoundRequestBuilder boundRequestBuilder = abstractHttp.prepareDelete((String) t);
+        BoundRequestBuilder boundRequestBuilder = abstractHttp.prepareDelete(t.getUri());
         return boundRequestBuilder.build();
 
     }

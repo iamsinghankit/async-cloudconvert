@@ -1,21 +1,14 @@
 package com.async.cloudconvert.service;
 
-import org.asynchttpclient.AsyncCompletionHandler;
-
 import java.io.Closeable;
-import java.util.Optional;
+import java.io.File;
 
 /**
  * @author Ankit Singh
  */
 public interface Process extends Closeable {
+    void initialize();
 
-    void start(AsyncCompletionHandler handler);
-
-    void start();
-
-    Optional<CloudResponse> getResponse();
-
-    void close(String url);
+    Conversion startConversion(File inputFile);
 
 }

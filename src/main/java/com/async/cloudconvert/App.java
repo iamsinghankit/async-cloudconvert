@@ -8,8 +8,8 @@ import com.async.cloudconvert.service.Process;
 public class App {
     public static void main(String[] args) {
         CloudConvert cloudConvert=new CloudConvert("Cnkye1uS4LYBT5kgPV0mcTfW0liPwgE37tDUMIJdHRXIFSadyZaQ1Sv1xnMfG6DQ");
-       try(Process process= cloudConvert.createAndStartSyncProcess("doc","pdf")){
-           System.out.println("Response : "+process.getResponse().get().getAsString());
+       try(Process process= cloudConvert.createProcess("doc","pdf")){
+
        }catch (Exception ex){
 
        }

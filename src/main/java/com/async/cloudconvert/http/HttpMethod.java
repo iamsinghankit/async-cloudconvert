@@ -21,7 +21,7 @@ public enum HttpMethod {
     DELETE("DELETE"){
         @Override
         public <T> Http execute(T t) {
-            return new Delete((CharSequence) t);
+            return new Delete((HttpHandler.Builder) t);
         }
     };
 
